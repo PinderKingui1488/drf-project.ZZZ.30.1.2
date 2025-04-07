@@ -4,9 +4,9 @@ from materials.models import Subscription
 
 from materials.views import CourseViewSet, LessonCreateApiView, LessonUpdateApiView, LessonRetrieveApiView, \
     LessonDestroyApiView, LessonListApiView, SubView
-from materials.apps import ZifirkaguideConfig
+from materials.apps import Config
 
-app_name = ZifirkaguideConfig.name
+app_name = Config.name
 
 router = SimpleRouter()
 router.register("courses", CourseViewSet)

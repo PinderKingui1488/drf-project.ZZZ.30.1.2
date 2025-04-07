@@ -1,12 +1,12 @@
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import AllowAny
 
-from users.models import Payments, User
-from users.serializer import PaymentsSerializers, UserSerializer
+from users.models import Payments, CustomUserManager
+from users.serializer import CourseSerializer, LessonSerializer
 
 
 class PaymentsViewSet(viewsets.ModelViewSet):
-    serializer_class = PaymentsSerializers
+    serializer_class = CourseSerializer
     queryset = Payments.objects.all()
     filter_backends = [filters.OrderingFilter]
     filterset_fields = ['paid_course', 'separately_paid_lesson', 'payment_method']
@@ -14,8 +14,8 @@ class PaymentsViewSet(viewsets.ModelViewSet):
 
 
 class UserCreateAPIView(generics.CreateAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+    serializer_class = LessonSerializer
+    queryset = CustomUserManager.objects.all()
     permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):
@@ -25,5 +25,5 @@ class UserCreateAPIView(generics.CreateAPIView):
 
 
 class UserListAPIView(generics.ListAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+    serializer_class = LessonSerializer
+    queryset = CustomUserManager.objects.all()
