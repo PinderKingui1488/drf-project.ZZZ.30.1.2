@@ -1,25 +1,30 @@
 from django.db import models
+from users.models import User
 
 
-# Create your models here.
 class Course(models.Model):
+    objects = None
     name = models.CharField(
         max_length=100,
         verbose_name="Название",
-        help_text="Введите название курса"
     )
     description = models.TextField(
         verbose_name="Описание",
         blank=True,
         null=True,
-        help_text="Введите описание курса"
     )
     image = models.ImageField(
         upload_to="products/",
-        verbose_name="Изображение",
+        verbose_name="Картинка",
         blank=True,
         null=True,
-        help_text="Вставьте изображение курса"
+    )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Хозяин",
     )
 
     class Meta:
@@ -35,20 +40,17 @@ class Lesson(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name="Наименование",
-        help_text="Введите название урока"
     )
     description = models.TextField(
-        verbose_name="Описание",
+        verbose_name="Внешка",
         blank=True,
         null=True,
-        help_text="Введите описание урока"
     )
     image = models.ImageField(
         upload_to="products/",
-        verbose_name="Изображение",
+        verbose_name="Картинка",
         blank=True,
         null=True,
-        help_text="Загрузите изображение урока",
     )
     course = models.ForeignKey(
         Course,
@@ -56,7 +58,14 @@ class Lesson(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        help_text="В каком курсе урок?"
+        related_name="lessons",
+    )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Хозяин",
     )
 
     class Meta:
@@ -67,3 +76,17 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, blank=True, null=True
+    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'subscription {self.pk}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
