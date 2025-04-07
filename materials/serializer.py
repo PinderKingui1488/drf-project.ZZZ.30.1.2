@@ -1,5 +1,5 @@
 from materials.validators import YoutubeURLValidator
-from materials.models import Course, Lesson, Subscription
+from materials.models import Course, Lesson, description
 from rest_framework import serializers
 
 
@@ -24,7 +24,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, instance):
         user = self.context['request'].user
-        return Subscription.objects.filter(user=user, course=instance).exists()
+        return description.objects.filter(user=user, course=instance).exists()
 
     def create(self, validated_data):
         lessons = validated_data.pop("lessons")
@@ -36,7 +36,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class SubSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Subscription
+        model = description
         fields = "__all__"
 
 
