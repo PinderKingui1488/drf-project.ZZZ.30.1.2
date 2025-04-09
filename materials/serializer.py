@@ -1,5 +1,6 @@
 from materials.validators import YoutubeURLValidator
 from materials.models import Course, Lesson, Subscription
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 
 
