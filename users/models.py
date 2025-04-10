@@ -1,10 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from materials.models import Course, Lesson
-from django.forms import URLField
 
 
-# Create your models here.
+
 class User(AbstractUser):
     username = None
     email = models.EmailField(
@@ -44,6 +43,7 @@ class User(AbstractUser):
 
 
 class Payments(models.Model):
+    objects = None
     PAYMENT_STATUS = [
         ("cash", "наличные"),
         ("transfer", "перевод на счет"),
@@ -107,5 +107,5 @@ class Payments(models.Model):
         verbose_name = "Оплата"
         verbose_name_plural = "Оплаты"
 
-    def __str__(self):
-        return self.session_id
+
+

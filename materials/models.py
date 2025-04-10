@@ -32,11 +32,12 @@ class Course(models.Model):
         verbose_name_plural = "Курсы"
         ordering = ["name"]
 
-    def __str__(self):
+    def str(self):
         return self.name
 
 
 class Lesson(models.Model):
+    objects = None
     name = models.CharField(
         max_length=100,
         verbose_name="Наименование",
@@ -74,17 +75,18 @@ class Lesson(models.Model):
         ordering = ["name"]
         permissions = []
 
-    def __str__(self):
+    def str(self):
         return self.name
 
 
 class Subscription(models.Model):
+    objects = None
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, blank=True, null=True
     )
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def str(self):
         return f'subscription {self.pk}'
 
     class Meta:

@@ -3,12 +3,11 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 from rest_framework.permissions import IsAuthenticated
 from materials.paginators import CustomPaginator
 from materials.models import Lesson, Course, Subscription
-from materials.serializer import LessonSerializer, LessonDetailSerializer, CourseSerializer
-from users.permissions import IsModer, IsOwner
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-
+from materials.serializer import LessonSerializer, LessonDetailSerializer, CourseSerializer
+from users.permissions import IsModer, IsOwner
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()

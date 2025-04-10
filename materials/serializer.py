@@ -4,10 +4,25 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 
 
+def get_count_less_cour(lesson):
+    return Lesson.objects.filter(course=lesson.course).count()
+
+
+class LessonDetailSerializer(ModelSerializer):
+    count_lessons_with_same_course = SerializerMethodField()
+
+    class Meta:
+        model = Lesson
+        fields = ("name", "course", "count_lessons_with_same_course")
+
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = "__all__"
+
+
+def get_lesson_count(instance):
+    return instance.lessons.all().count()
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -19,9 +34,6 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = "__all__"
         validators = [YoutubeURLValidator(field='video')]
-
-    def get_lesson_count(self, instance):
-        return instance.lessons.all().count()
 
     def get_is_subscribed(self, instance):
         user = self.context['request'].user
