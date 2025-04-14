@@ -21,6 +21,7 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
 def get_lesson_count(instance):
     return instance.lessons.all().count()
 

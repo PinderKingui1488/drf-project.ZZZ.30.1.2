@@ -1,8 +1,6 @@
-
-from urllib import request, response
 from rest_framework import status
-from rest_framework.test import APITestCase
 from rest_framework.serializers import ValidationError
+from rest_framework.test import APITestCase
 
 from materials.models import Course, Lesson
 from users.models import User

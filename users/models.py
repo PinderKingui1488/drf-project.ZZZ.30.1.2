@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from materials.models import Course, Lesson
+from django.forms import URLField
 
 
 
@@ -106,6 +107,9 @@ class Payments(models.Model):
     class Meta:
         verbose_name = "Оплата"
         verbose_name_plural = "Оплаты"
+
+def __str__(self):
+    return self.session_id
 
 
 

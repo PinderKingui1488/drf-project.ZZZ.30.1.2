@@ -79,6 +79,7 @@ class Lesson(models.Model):
         return self.name
 
 
+
 class Subscription(models.Model):
     objects = None
     user = models.ForeignKey(
