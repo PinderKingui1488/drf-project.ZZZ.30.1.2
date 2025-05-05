@@ -15,13 +15,13 @@ class PaymentsViewSet(viewsets.ModelViewSet):
     ordering_fields = ['payment_date']
 
     def perform_create(self, serializer):
-          payment = serializer.save(user=self.request.user, date = timezone.now().date())
-          product = create_stripe_product(payment)
-          price = create_price(payment.payment_summ, product)
-          session_id, payment_link = create_stripe_session(price)
-          payment.session_id = session_id
-          payment.link = payment_link
-          payment.save()
+        payment = serializer.save(user=self.request.user, date=timezone.now().date())
+        product = create_stripe_product(payment)
+        price = create_price(payment.payment_summ, product)
+        session_id, payment_link = create_stripe_session(price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -37,4 +37,3 @@ class UserCreateAPIView(generics.CreateAPIView):
 
 class UserListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
