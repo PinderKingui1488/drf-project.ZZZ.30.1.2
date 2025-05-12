@@ -26,11 +26,9 @@ INSTALLED_APPS = [
 ]
 
 MY_APPS = [
-    'users',
-    'education',
+    'materials.apps.Config',
     'drf_yasg',
     'corsheaders'
-
 ]
 
 INSTALLED_APPS += MY_APPS
@@ -135,3 +133,5 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")

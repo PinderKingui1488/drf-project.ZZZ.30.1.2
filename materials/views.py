@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from materials.paginators import CustomPaginator
 from materials.models import Lesson, Course, Subscription
 from rest_framework.response import Response
@@ -71,3 +71,19 @@ class SubView(APIView):
             Subscription.objects.create(user=user, course=course)
             message = 'подписка добавлена'
         return Response({"message": message})
+
+
+class HomeView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        return Response({
+            "message": "Welcome to DRF Project API",
+            "endpoints": {
+                "courses": "/courses/",
+                "lessons": "/lessons/",
+                "users": "/users/",
+                "swagger": "/swagger/",
+                "redoc": "/redoc/"
+            }
+        })

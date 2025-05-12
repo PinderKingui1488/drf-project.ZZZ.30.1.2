@@ -94,6 +94,27 @@ class Payments(models.Model):
         null=True,
         blank=True
     )
+    session_id = models.CharField(
+        max_length=255,
+        verbose_name="ID сессии Stripe",
+        null=True,
+        blank=True
+    )
+    link = models.URLField(
+        verbose_name="Ссылка на оплату",
+        null=True,
+        blank=True
+    )
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Ожидает оплаты'),
+            ('completed', 'Оплачено'),
+            ('failed', 'Ошибка оплаты')
+        ],
+        default='pending',
+        verbose_name="Статус оплаты"
+    )
 
     def __str__(self):
         return f'{self.user} {self.paid_course}'

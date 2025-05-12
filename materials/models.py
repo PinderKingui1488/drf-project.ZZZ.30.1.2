@@ -1,5 +1,4 @@
 from django.db import models
-from users.models import User
 
 
 class Course(models.Model):
@@ -20,8 +19,8 @@ class Course(models.Model):
         null=True,
     )
     owner = models.ForeignKey(
-        "users.User",
-        on_delete=models.SET_NULL,
+        'users.User',
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         verbose_name="Хозяин",
@@ -62,8 +61,8 @@ class Lesson(models.Model):
         related_name="lessons",
     )
     owner = models.ForeignKey(
-        "users.User",
-        on_delete=models.SET_NULL,
+        'users.User',
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         verbose_name="Хозяин",
@@ -83,7 +82,10 @@ class Lesson(models.Model):
 class Subscription(models.Model):
     objects = None
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=True, null=True
+        'users.User',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 

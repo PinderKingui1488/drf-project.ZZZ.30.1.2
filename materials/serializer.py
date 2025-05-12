@@ -34,7 +34,9 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = "__all__"
-        validators = [YoutubeURLValidator(field='video')]
+
+    def get_lesson_count(self, instance):
+        return instance.lessons.all().count()
 
     def get_is_subscribed(self, instance):
         user = self.context['request'].user

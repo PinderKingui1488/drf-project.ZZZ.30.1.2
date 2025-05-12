@@ -1,10 +1,19 @@
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from django.utils import timezone
 from users.models import Payments, User
 from users.serializer import PaymentsSerializers, UserSerializer
 from users.services import create_price, create_stripe_product, create_stripe_session
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import stripe
+from config.settings import API_KEY
+
+stripe.api_key = API_KEY
 
 
 class PaymentsViewSet(viewsets.ModelViewSet):
@@ -37,3 +46,37 @@ class UserCreateAPIView(generics.CreateAPIView):
 
 class UserListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
+
+
+@csrf_exempt
+@require_POST
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, API_KEY
+        )
+    except ValueError as e:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        payment = Payments.objects.get(session_id=session['id'])
+        payment.payment_status = 'completed'
+        payment.save()
+
+    return HttpResponse(status=200)
+
+
+class PaymentSuccessView(APIView):
+    def get(self, request):
+        return Response({"message": "Payment successful!"})
+
+
+class PaymentCancelView(APIView):
+    def get(self, request):
+        return Response({"message": "Payment cancelled"})
