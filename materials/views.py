@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from materials.serializer import LessonSerializer, LessonDetailSerializer, CourseSerializer
 from users.permissions import IsModer, IsOwner
+from django.utils import timezone
+from datetime import timedelta
+from materials.tasks import send_course_update_email
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
@@ -25,6 +28,20 @@ class CourseViewSet(ModelViewSet):
         elif self.action == 'destroy':
             self.permission_classes = (IsModer | IsOwner,)
         return super().get_permissions()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        now = timezone.now()
+        # Проверка: прошло ли больше 4 часов с последнего обновления
+        if instance.updated_at is None or (now - instance.updated_at) > timedelta(hours=4):
+            # Получаем email всех подписчиков
+            emails = list(
+                Subscription.objects.filter(course=instance, user__email__isnull=False)
+                .values_list('user__email', flat=True)
+            )
+            if emails:
+                send_course_update_email.delay(instance.pk, emails)
+        return super().update(request, *args, **kwargs)
 
 
 class LessonCreateApiView(CreateAPIView):

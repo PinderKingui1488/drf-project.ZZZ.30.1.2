@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv(override=True)
 
@@ -92,7 +93,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru"
 
-TIME_ZONE = os.getenv("TIME_ZONE")
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -135,3 +136,29 @@ SIMPLE_JWT = {
 }
 
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # или другой брокер
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# django-celery-beat
+INSTALLED_APPS += ['django_celery_beat']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ananimuszahar@gmail.com'
+EMAIL_HOST_PASSWORD = 'LEFT_IGHT3'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CELERY_BEAT_SCHEDULE = {
+    'deactivate-inactive-users-every-night': {
+        'task': 'users.tasks.deactivate_inactive_users',
+        'schedule': crontab(hour=0, minute=0),  # каждый день в полночь
+    },
+}

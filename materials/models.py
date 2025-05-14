@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Course(models.Model):
@@ -25,6 +26,7 @@ class Course(models.Model):
         blank=True,
         verbose_name="Хозяин",
     )
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время последнего обновления")
 
     class Meta:
         verbose_name = "Курс"
